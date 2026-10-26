@@ -1,0 +1,5 @@
+@include gcc-vers.texi
+@macro versionsubtitle
+@subtitle For @sc{gcc} version @value{version-GCC}
+@vskip 0pt plus 1filll
+@end macro

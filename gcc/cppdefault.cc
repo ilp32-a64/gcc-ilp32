@@ -67,7 +67,10 @@ const struct default_include cpp_include_defaults[]
 #ifdef LOCAL_INCLUDE_DIR
     /* /usr/local/include comes before the fixincluded header files.  */
     { LOCAL_INCLUDE_DIR, 0, 0, 1, 1, 2 },
+#if 0
+    /* Unsafe to assume that /usr/local/include is ready for multiarch.  */
     { LOCAL_INCLUDE_DIR, 0, 0, 1, 1, 0 },
+#endif
 #endif
 #ifdef PREFIX_INCLUDE_DIR
     { PREFIX_INCLUDE_DIR, 0, 0, 1, 0, 0 },

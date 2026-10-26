@@ -45,7 +45,8 @@ package body System.OS_Primitives is
 
    function nanosleep (rqtp, rmtp : not null access C_Time.timespec)
                       return Integer;
-   pragma Import (C, nanosleep, "nanosleep");
+   pragma Import (C, nanosleep, (if OS_Constants.Glibc_Use_Time_Bits64
+     then "__nanosleep64" else "nanosleep"));
 
    -----------
    -- Clock --
@@ -62,7 +63,8 @@ package body System.OS_Primitives is
       function clock_gettime
         (clock_id : clockid_t;
          tp       : access C_Time.timespec) return int;
-      pragma Import (C, clock_gettime, "clock_gettime");
+      pragma Import (C, clock_gettime, (if OS_Constants.Glibc_Use_Time_Bits64
+        thon "__clock_gettime64" else "clock_gettime"));
 
    begin
       Result := clock_gettime (CLOCK_REALTIME, TS'Unchecked_Access);

@@ -22,7 +22,7 @@ a copy of the GCC Runtime Library Exception along with this program;
 see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 <http://www.gnu.org/licenses/>.  */
 
-#if !defined (AARCH64_UNWIND_H) && !defined (__ILP32__)
+#if !defined (AARCH64_UNWIND_H)
 #define AARCH64_UNWIND_H
 
 #define DWARF_REGNUM_AARCH64_RA_STATE 34
@@ -48,6 +48,23 @@ aarch64_cie_signed_with_b_key (struct _Unwind_Context *context)
   return 0;
 }
 
+#ifdef __ILP32__
+/* ILP32: authenticate the 64-bit return address ADDR, signed with the A key
+   (or the B key if B_KEY) and SALT, before it is truncated to a pointer.  */
+
+static inline _Unwind_Word
+aarch64_ilp32_authenticate (_Unwind_Word addr, _Unwind_Word salt, int b_key)
+{
+  if (b_key)
+    __asm__ ("mov x17, %0\n\tmov x16, %1\n\thint 14 // autib1716\n\tmov %0, x17"
+	     : "+r" (addr) : "r" (salt) : "x16", "x17");
+  else
+    __asm__ ("mov x17, %0\n\tmov x16, %1\n\thint 12 // autia1716\n\tmov %0, x17"
+	     : "+r" (addr) : "r" (salt) : "x16", "x17");
+  return addr;
+}
+#endif
+
 /* Do AArch64 private extraction on ADDR_WORD based on context info CONTEXT and
    unwind frame info FS.  If ADDR_WORD is signed, we do address authentication
    on it using CFA of current frame.  */
@@ -57,7 +74,7 @@ aarch64_demangle_return_addr (struct _Unwind_Context *context,
 			      _Unwind_FrameState *fs,
 			      _Unwind_Word addr_word)
 {
-  void *addr = (void *)addr_word;
+  void *addr = (void *) (_Unwind_Ptr) addr_word;
   const int reg = DWARF_REGNUM_AARCH64_RA_STATE;
 
   if (fs->regs.how[reg] == REG_UNSAVED)
@@ -69,15 +86,24 @@ aarch64_demangle_return_addr (struct _Unwind_Context *context,
   if (fs->regs.how[reg] == REG_UNSAVED_ARCHEXT
       || (_Unwind_GetGR (context, reg) & 0x1) != 0)
     {
-      _Unwind_Word salt = (_Unwind_Word) context->cfa;
+      /* Through _Unwind_Ptr: GCC sign-extends a pointer converted to a
+	 wider integer, and an ILP32 stack is just below 4 GiB.  */
+      _Unwind_Word salt = (_Unwind_Word) (_Unwind_Ptr) context->cfa;
+#ifdef __ILP32__
+      return (void *) (_Unwind_Ptr)
+	aarch64_ilp32_authenticate (addr_word, salt,
+				    aarch64_cie_signed_with_b_key (context));
+#else
       if (aarch64_cie_signed_with_b_key (context) != 0)
 	return __builtin_aarch64_autib1716 (addr, salt);
       return __builtin_aarch64_autia1716 (addr, salt);
+#endif
     }
 
   return addr;
 }
 
+#ifndef __ILP32__
 /* SME runtime function local to libgcc, streaming compatible
    and preserves more registers than the base PCS requires, but
    we don't rely on that here.  */
@@ -93,5 +119,6 @@ void __libgcc_arm_za_disable (void);
       __libgcc_arm_za_disable ();			\
     }							\
   while (0)
+#endif /* !__ILP32__ */
 
-#endif /* defined AARCH64_UNWIND_H && defined __ILP32__ */
+#endif /* defined AARCH64_UNWIND_H */

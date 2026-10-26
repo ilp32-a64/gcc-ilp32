@@ -276,7 +276,7 @@
 	  break;
 
 	case DW_CFA_GNU_window_save:
-#if defined (__aarch64__) && !defined (__ILP32__)
+#if defined (__aarch64__)
 	  /* This CFA is multiplexed with Sparc.  On AArch64 it's used to toggle
 	     return address signing status.  REG_UNSAVED/REG_UNSAVED_ARCHEXT
 	     mean RA signing is disabled/enabled.  */

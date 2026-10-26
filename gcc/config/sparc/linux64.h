@@ -90,7 +90,7 @@ along with GCC; see the file COPYING3.  If not see
   { "link_arch_default", LINK_ARCH_DEFAULT_SPEC },	  \
   { "link_arch",	 LINK_ARCH_SPEC },
 
-#define LINK_ARCH32_SPEC "-m elf32_sparc %{shared:-shared} \
+#define LINK_ARCH32_SPEC "-m elf32_sparc %{shared:-shared} %{!fsanitize=*:--as-needed} \
   %{!shared: \
     %{!static: \
       %{rdynamic:-export-dynamic} \
@@ -98,7 +98,7 @@ along with GCC; see the file COPYING3.  If not see
       %{static:-static}} \
 "
 
-#define LINK_ARCH64_SPEC "-m elf64_sparc %{shared:-shared} \
+#define LINK_ARCH64_SPEC "-m elf64_sparc %{shared:-shared} %{!fsanitize=*:--as-needed} \
   %{!shared: \
     %{!static: \
       %{rdynamic:-export-dynamic} \

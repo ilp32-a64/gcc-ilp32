@@ -26,6 +26,7 @@
    see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
+#ifndef inhibit_libc
 #include "tconfig.h"
 #include "tsystem.h"
 #include "coretypes.h"
@@ -2466,4 +2467,5 @@ alias (_Unwind_SetGR);
 alias (_Unwind_SetIP);
 #endif
 
+#endif
 #endif

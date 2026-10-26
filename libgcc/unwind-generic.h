@@ -222,6 +222,7 @@ _Unwind_SjLj_Resume_or_Rethrow (struct _Unwind_Exception *);
    compatible with the standard ABI for IA-64, we inline these.  */
 
 #ifdef __ia64__
+#ifndef inhibit_libc
 static inline _Unwind_Ptr
 _Unwind_GetDataRelBase (struct _Unwind_Context *_C)
 {
@@ -238,6 +239,7 @@ _Unwind_GetTextRelBase (struct _Unwind_Context *_C __attribute__ ((__unused__)))
 
 /* @@@ Retrieve the Backing Store Pointer of the given context.  */
 extern _Unwind_Word _Unwind_GetBSP (struct _Unwind_Context *);
+#endif /* inhibit_libc */
 #else
 extern _Unwind_Ptr _Unwind_GetDataRelBase (struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetTextRelBase (struct _Unwind_Context *);

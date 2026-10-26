@@ -23,6 +23,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #if defined (USE_GAS_SYMVER) && defined (USE_LIBUNWIND_EXCEPTIONS)
+#ifndef inhibit_libc
 #include "tconfig.h"
 #include "tsystem.h"
 #include "unwind.h"
@@ -206,4 +207,5 @@ _Unwind_SetIP (struct _Unwind_Context *context, _Unwind_Ptr val)
   return __libunwind_Unwind_SetIP (context, val);
 }
 symver (_Unwind_SetIP, GCC_3.0);
+#endif
 #endif

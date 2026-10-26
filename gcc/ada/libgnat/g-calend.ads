@@ -40,7 +40,7 @@
 --  Day_Of_Week, Day_In_Year and Week_In_Year.
 
 with Ada.Calendar.Formatting;
-with Interfaces.C;
+with System.C_Time;
 
 package GNAT.Calendar is
 
@@ -145,24 +145,19 @@ package GNAT.Calendar is
    --  Return the week number as defined in ISO 8601 along with the year in
    --  which the week occurs.
 
-   --  C timeval conversion
+   subtype timeval is System.C_Time.timeval;
+   --  Deprecated.  Please use C_Time directly.
 
-   --  C timeval represent a duration (used in Select for example). This
-   --  structure is composed of a number of seconds and a number of micro
-   --  seconds. The timeval structure is not exposed here because its
-   --  definition is target dependent. Interface to C programs is done via a
-   --  pointer to timeval structure.
+   function To_Duration (T : not null access timeval)
+                        return System.C_Time.Non_Negative_Duration
+   is (System.C_Time.To_Duration (T.all));
+   --  Deprecated.  Please use C_Time directly.
 
-   type timeval is private;
-
-   function To_Duration (T : not null access timeval) return Duration;
-   function To_Timeval  (D : Duration) return timeval;
+   function To_Timeval (D : System.C_Time.Non_Negative_Duration) return timeval
+   renames System.C_Time.To_Timeval;
+   --  Deprecated.  Please use C_Time directly.
 
 private
-   --  This is a dummy declaration that should be the largest possible timeval
-   --  structure of all supported targets.
-
-   type timeval is array (1 .. 3) of Interfaces.C.long;
 
    function Julian_Day
      (Year  : Ada.Calendar.Year_Number;

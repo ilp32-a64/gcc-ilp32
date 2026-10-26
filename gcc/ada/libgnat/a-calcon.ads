@@ -33,6 +33,7 @@
 --  time models - Time, Duration, struct tm and struct timespec.
 
 with Interfaces.C;
+with System.C_Time;
 
 package Ada.Calendar.Conversions is
 
@@ -68,20 +69,18 @@ package Ada.Calendar.Conversions is
    --  and the instance in time is not a leap second occurrence.
 
    function To_Duration
-     (tv_sec  : Interfaces.C.long;
-      tv_nsec : Interfaces.C.long) return Duration;
-   --  Convert an elapsed time value expressed in Unix-like fields of struct
-   --  timespec into a Duration value. The expected ranges are:
-
-   --     tv_sec   -  seconds
-   --     tv_nsec  -  nanoseconds
+     (tv_sec  : System.C_Time.Tv_Sec_Long;
+      tv_nsec : System.C_Time.Tv_Nsec_Long)
+     return System.C_Time.Non_Negative_Duration
+   renames System.C_Time.To_Duration;
+   --  Deprecated.  Please use C_Time directly.
 
    procedure To_Struct_Timespec
-     (D       : Duration;
-      tv_sec  : out Interfaces.C.long;
-      tv_nsec : out Interfaces.C.long);
-   --  Convert a Duration value into the constituents of struct timespec.
-   --  Formal tv_sec denotes seconds and tv_nsecs denotes nanoseconds.
+     (D       : System.C_Time.Non_Negative_Duration;
+      tv_sec  : out System.C_Time.Tv_Sec_Long;
+      tv_nsec : out System.C_Time.Tv_Nsec_Long)
+   renames System.C_Time.To_Struct_Timespec;
+   --  Deprecated.  Please use C_Time directly.
 
    procedure To_Struct_Tm
      (T       : Time;

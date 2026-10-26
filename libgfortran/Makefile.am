@@ -44,7 +44,7 @@ extra_darwin_ldflags_libgfortran += -Wl,-rpath,@loader_path
 endif
 
 gfor_c_HEADERS = ISO_Fortran_binding.h
-gfor_cdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+gfor_cdir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 
 LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS)) \
 	    $(lt_host_flags)
@@ -60,14 +60,14 @@ libgfortran_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
 libgfortran_la_DEPENDENCIES = $(version_dep) libgfortran.spec $(LIBQUADLIB_DEP)
 
 cafexeclib_LTLIBRARIES = libcaf_single.la
-cafexeclibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
+cafexeclibdir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
 libcaf_single_la_SOURCES = caf/single.c
 libcaf_single_la_LDFLAGS = -static
 libcaf_single_la_DEPENDENCIES = caf/libcaf.h
 libcaf_single_la_LINK = $(LINK) $(libcaf_single_la_LDFLAGS)
 
 if IEEE_SUPPORT
-fincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
+fincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
 nodist_finclude_HEADERS = ieee_arithmetic.mod ieee_exceptions.mod ieee_features.mod
 endif
 

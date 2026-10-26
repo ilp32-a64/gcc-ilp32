@@ -929,7 +929,7 @@ toolexeclibdir = $(ADA_RTL_OBJ_DIR)
 
 ADA_INCLUDE_DIR = $(libsubdir)/adainclude
 ADA_RTL_OBJ_DIR = $(libsubdir)/adalib
-ADA_RTL_DSO_DIR = $(toolexeclibdir)
+ADA_RTL_DSO_DIR = $(subst /gcc/,/gcc-cross/,$(toolexeclibdir))
 
 # Special flags
 

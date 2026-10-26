@@ -114,6 +114,7 @@ AC_DEFUN([DRUNTIME_INSTALL_DIRECTORIES],
 
   # Default case for install directory for D sources files.
   gdc_include_dir='$(libdir)/gcc/${target_alias}/${gcc_version}/include/d'
+  gdc_include_dir='${libdir}/gcc-cross/${target_alias}'/${gcc_version}/include/d
   AC_SUBST(gdc_include_dir)
 ])
 

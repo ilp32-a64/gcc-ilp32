@@ -27,7 +27,7 @@ MAKEOVERRIDES=
 gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
 
 # Directory in which the compiler finds libraries etc.
-libsubdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)
+libsubdir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)
 # Used to install the shared libgcc.
 # was slibdir = @slibdir@
 slibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)

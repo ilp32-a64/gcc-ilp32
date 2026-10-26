@@ -4952,7 +4952,7 @@ process_command (unsigned int decoded_options_count,
 	 GCC_EXEC_PREFIX is typically a directory name with a trailing
 	 / (which is ignored by make_relative_prefix), so append a
 	 program name.  */
-      char *tmp_prefix = concat (gcc_exec_prefix, "gcc", NULL);
+      char *tmp_prefix = concat (gcc_exec_prefix, "gcc-cross", NULL);
       gcc_libexec_prefix = get_relative_prefix (tmp_prefix,
 						standard_exec_prefix,
 						standard_libexec_prefix);
@@ -4978,15 +4978,15 @@ process_command (unsigned int decoded_options_count,
     {
       int len = strlen (gcc_exec_prefix);
 
-      if (len > (int) sizeof ("/lib/gcc/") - 1
+      if (len > (int) sizeof ("/lib/gcc-cross/") - 1
 	  && (IS_DIR_SEPARATOR (gcc_exec_prefix[len-1])))
 	{
-	  temp = gcc_exec_prefix + len - sizeof ("/lib/gcc/") + 1;
+	  temp = gcc_exec_prefix + len - sizeof ("/lib/gcc-cross/") + 1;
 	  if (IS_DIR_SEPARATOR (*temp)
 	      && filename_ncmp (temp + 1, "lib", 3) == 0
 	      && IS_DIR_SEPARATOR (temp[4])
-	      && filename_ncmp (temp + 5, "gcc", 3) == 0)
-	    len -= sizeof ("/lib/gcc/") - 1;
+	      && filename_ncmp (temp + 5, "gcc-cross", 3) == 0)
+	    len -= sizeof ("/lib/gcc-cross/") - 1;
 	}
 
       set_std_prefix (gcc_exec_prefix, len);

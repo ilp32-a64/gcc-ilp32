@@ -517,8 +517,8 @@ gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
 search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir) \
 	      $(top_srcdir)/../include
 
-fincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
-libsubincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+fincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
+libsubincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 AM_CPPFLAGS = $(addprefix -I, $(search_path))
 AM_CFLAGS = $(XCFLAGS)
 AM_LDFLAGS = $(XLDFLAGS) $(SECTION_LDFLAGS) $(OPT_LDFLAGS)

@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I .. -I ../config
 
-sanincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include/sanitizer
+sanincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include/sanitizer
 
 nodist_saninclude_HEADERS =
 

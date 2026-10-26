@@ -366,7 +366,7 @@ gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
 @LIBSSP_USE_SYMVER_SUN_TRUE@@LIBSSP_USE_SYMVER_TRUE@version_dep = ssp.map-sun
 AM_CFLAGS = -Wall $(XCFLAGS)
 toolexeclib_LTLIBRARIES = libssp.la libssp_nonshared.la
-libsubincludedir = $(libdir)/gcc/$(target_noncanonical)/$(gcc_version)/include
+libsubincludedir = $(libdir)/gcc-cross/$(target_noncanonical)/$(gcc_version)/include
 nobase_libsubinclude_HEADERS = ssp/ssp.h ssp/string.h ssp/stdio.h ssp/unistd.h
 libssp_la_SOURCES = \
 	ssp.c gets-chk.c memcpy-chk.c memmove-chk.c mempcpy-chk.c \

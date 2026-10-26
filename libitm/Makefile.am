@@ -12,7 +12,7 @@ abi_version = -fabi-version=4
 config_path = @config_path@
 search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir)
 
-libsubincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+libsubincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 
 vpath % $(strip $(search_path))
 

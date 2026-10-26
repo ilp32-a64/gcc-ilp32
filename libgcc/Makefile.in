@@ -200,7 +200,7 @@ STRIP = @STRIP@
 STRIP_FOR_TARGET = $(STRIP)
 
 # Directory in which the compiler finds libraries etc.
-libsubdir = $(libdir)/gcc/$(real_host_noncanonical)/$(version)@accel_dir_suffix@
+libsubdir = $(libdir)/gcc-cross/$(real_host_noncanonical)/$(version)@accel_dir_suffix@
 # Used to install the shared libgcc.
 slibdir = @slibdir@
 # Maybe used for DLLs on Windows targets.

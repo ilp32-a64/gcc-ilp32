@@ -261,6 +261,8 @@ AC_SUBST(SPEC_PHOBOS_DEPS)
 libtool_VERSION=5:0:0
 AC_SUBST(libtool_VERSION)
 
+# trigger rebuild of the configure file
+
 # Set default flags (after DRUNTIME_WERROR!)
 if test -z "$GDCFLAGS"; then
     GDCFLAGS="-g -O2"

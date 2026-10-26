@@ -471,7 +471,7 @@ AUTOMAKE_OPTIONS = foreign info-in-builddir
 
 @BUILD_LIBQUADMATH_TRUE@libquadmath_la_DEPENDENCIES = $(version_dep) $(libquadmath_la_LIBADD)
 @BUILD_LIBQUADMATH_TRUE@nodist_libsubinclude_HEADERS = quadmath.h quadmath_weak.h
-@BUILD_LIBQUADMATH_TRUE@libsubincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+@BUILD_LIBQUADMATH_TRUE@libsubincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 @BUILD_LIBQUADMATH_TRUE@libquadmath_la_SOURCES = \
 @BUILD_LIBQUADMATH_TRUE@  math/x2y2m1q.c math/acoshq.c math/fmodq.c \
 @BUILD_LIBQUADMATH_TRUE@  math/acosq.c math/frexpq.c \

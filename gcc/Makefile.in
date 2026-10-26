@@ -670,9 +670,9 @@ libexecdir = @libexecdir@
 # --------
 
 # Directory in which the compiler finds libraries etc.
-libsubdir = $(libdir)/gcc/$(real_target_noncanonical)/$(version)$(accel_dir_suffix)
+libsubdir = $(libdir)/gcc-cross/$(real_target_noncanonical)/$(version)$(accel_dir_suffix)
 # Directory in which the compiler finds executables
-libexecsubdir = $(libexecdir)/gcc/$(real_target_noncanonical)/$(version)$(accel_dir_suffix)
+libexecsubdir = $(libexecdir)/gcc-cross/$(real_target_noncanonical)/$(version)$(accel_dir_suffix)
 # Directory in which all plugin resources are installed
 plugin_resourcesdir = $(libsubdir)/plugin
  # Directory in which plugin headers are installed
@@ -2419,8 +2419,8 @@ default-rust.o: config/default-rust.cc
 
 DRIVER_DEFINES = \
   -DSTANDARD_STARTFILE_PREFIX=\"$(unlibsubdir)/\" \
-  -DSTANDARD_EXEC_PREFIX=\"$(libdir)/gcc/\" \
-  -DSTANDARD_LIBEXEC_PREFIX=\"$(libexecdir)/gcc/\" \
+  -DSTANDARD_EXEC_PREFIX=\"$(libdir)/gcc-cross/\" \
+  -DSTANDARD_LIBEXEC_PREFIX=\"$(libexecdir)/gcc-cross/\" \
   -DDEFAULT_TARGET_VERSION=\"$(version)\" \
   -DDEFAULT_REAL_TARGET_MACHINE=\"$(real_target_noncanonical)\" \
   -DDEFAULT_TARGET_MACHINE=\"$(target_noncanonical)\" \
@@ -3188,7 +3188,7 @@ PREPROCESSOR_DEFINES = \
   -DTOOL_INCLUDE_DIR=\"$(gcc_tooldir)/include\" \
   -DNATIVE_SYSTEM_HEADER_DIR=\"$(NATIVE_SYSTEM_HEADER_DIR)\" \
   -DPREFIX=\"$(prefix)/\" \
-  -DSTANDARD_EXEC_PREFIX=\"$(libdir)/gcc/\" \
+  -DSTANDARD_EXEC_PREFIX=\"$(libdir)/gcc-cross/\" \
   @TARGET_SYSTEM_ROOT_DEFINE@
 
 CFLAGS-cppbuiltin.o += $(PREPROCESSOR_DEFINES) -DBASEVER=$(BASEVER_s)

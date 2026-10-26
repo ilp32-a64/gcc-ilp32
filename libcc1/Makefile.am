@@ -40,7 +40,7 @@ libiberty = $(if $(wildcard $(libiberty_noasan)),$(Wc)$(libiberty_noasan), \
 	    $(Wc)$(libiberty_normal)))
 libiberty_dep = $(patsubst $(Wc)%,%,$(libiberty))
 
-plugindir = $(libdir)/gcc/$(target_noncanonical)/$(gcc_version)/plugin
+plugindir = $(libdir)/gcc-cross/$(target_noncanonical)/$(gcc_version)/plugin
 cc1libdir = $(libdir)/$(libsuffix)
 
 if ENABLE_PLUGIN

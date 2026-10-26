@@ -362,7 +362,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I .. -I ../config
-sanincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include/sanitizer
+sanincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include/sanitizer
 nodist_saninclude_HEADERS = $(am__append_1)
 @SANITIZER_SUPPORTED_TRUE@SUBDIRS = sanitizer_common $(am__append_2) \
 @SANITIZER_SUPPORTED_TRUE@	$(am__append_3) lsan asan ubsan \

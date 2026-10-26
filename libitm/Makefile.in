@@ -458,7 +458,7 @@ SUBDIRS = testsuite
 gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
 abi_version = -fabi-version=4
 search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir)
-libsubincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+libsubincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 AM_CPPFLAGS = $(addprefix -I, $(search_path))
 AM_CFLAGS = $(XCFLAGS)
 AM_CXXFLAGS = $(XCFLAGS) -std=gnu++0x -funwind-tables -fno-exceptions \

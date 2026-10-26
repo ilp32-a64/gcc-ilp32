@@ -11,8 +11,8 @@ config_path = @config_path@
 search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir) \
 	      $(top_srcdir)/../include
 
-fincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
-libsubincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)/include
+fincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
+libsubincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)/include
 
 vpath % $(strip $(search_path))
 

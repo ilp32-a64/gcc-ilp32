@@ -70,7 +70,7 @@ GCC_DIR=$(MULTIBUILDTOP)../../$(host_subdir)/gcc
 
 target_noncanonical:=@target_noncanonical@
 version := $(shell @get_gcc_base_ver@ $(srcdir)/../gcc/BASE-VER)
-libsubdir := $(libdir)/gcc/$(target_noncanonical)/$(version)$(MULTISUBDIR)
+libsubdir := $(libdir)/gcc-cross/$(target_noncanonical)/$(version)$(MULTISUBDIR)
 ADA_RTS_DIR=$(GCC_DIR)/ada/rts$(subst /,_,$(MULTISUBDIR))
 
 # exeext should not be used because it's the *host* exeext.  We're building

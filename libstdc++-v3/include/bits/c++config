@@ -891,4 +891,6 @@ namespace __gnu_cxx
 #endif // __has_include
 #endif // C++17
 
+#define _GLIBCXX_TIME_BITS64_ABI_TAG
+
 // End of prewritten config; the settings discovered at configure time follow.

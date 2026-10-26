@@ -85,6 +85,13 @@
 // libpthread.
 #  define _GLIBCXX_GTHREAD_USE_WEAK 0
 # endif
+
+# if defined(_TIME_BITS)
+#  if _TIME_BITS == 64
+#   undef _GLIBCXX_TIME_BITS64_ABI_TAG
+#   define _GLIBCXX_TIME_BITS64_ABI_TAG [[__gnu__::__abi_tag__("__time64")]]
+#  endif
+# endif
 #endif // __linux__
 
 #endif

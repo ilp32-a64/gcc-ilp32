@@ -1239,6 +1239,7 @@ _GLIBCXX_BEGIN_INLINE_ABI_NAMESPACE(_V2)
       now() noexcept;
 
       // Map to C API
+      _GLIBCXX_TIME_BITS64_ABI_TAG
       static std::time_t
       to_time_t(const time_point& __t) noexcept
       {
@@ -1246,6 +1247,7 @@ _GLIBCXX_BEGIN_INLINE_ABI_NAMESPACE(_V2)
 			   (__t.time_since_epoch()).count());
       }
 
+      _GLIBCXX_TIME_BITS64_ABI_TAG
       static time_point
       from_time_t(std::time_t __t) noexcept
       {

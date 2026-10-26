@@ -2598,7 +2598,7 @@ static tree cp_parser_type_id_1
 static void cp_parser_type_specifier_seq
   (cp_parser *, cp_parser_flags, bool, bool, cp_decl_specifier_seq *);
 static tree cp_parser_parameter_declaration_clause
-  (cp_parser *, cp_parser_flags);
+  (cp_parser *, cp_parser_flags, bool);
 static tree cp_parser_parameter_declaration_list
   (cp_parser *, cp_parser_flags, auto_vec<tree> *);
 static cp_parameter_declarator *cp_parser_parameter_declaration
@@ -11830,6 +11830,11 @@ cp_parser_lambda_declarator_opt (cp_parser* parser, tree lambda_expr)
 		 "lambda templates are only available with "
 		 "%<-std=c++20%> or %<-std=gnu++20%>");
 
+      /* Even though the whole lambda may be a default argument, its
+	 template-parameter-list is a context where it's OK to create
+	 new parameters.  */
+      auto lvf = make_temp_override (parser->local_variables_forbidden_p, 0u);
+
       cp_lexer_consume_token (parser->lexer);
 
       template_param_list = cp_parser_template_parameter_list (parser);
@@ -11867,7 +11872,7 @@ cp_parser_lambda_declarator_opt (cp_parser* parser, tree lambda_expr)
       /* Parse parameters.  */
       param_list
 	= cp_parser_parameter_declaration_clause
-	    (parser, CP_PARSER_FLAGS_TYPENAME_OPTIONAL);
+	    (parser, CP_PARSER_FLAGS_TYPENAME_OPTIONAL, /*lambda_p=*/true);
 
       /* Default arguments shall not be specified in the
 	 parameter-declaration-clause of a lambda-declarator.  */
@@ -14125,9 +14130,19 @@ cp_parser_range_for (cp_parser *parser, tree scope, tree init, tree range_decl,
 	      decomp = &decomp_d;
 	      decomp->count = tree_to_uhwi (TREE_OPERAND (v, 1)) + 1;
 	      decomp->decl = d;
+	      bool seen_name_independent_decl = false;
 	      for (unsigned int i = 0; i < decomp->count;
 		   i++, d = DECL_CHAIN (d))
 		{
+		  if (name_independent_decl_p (d))
+		    {
+		      /* If there is more than one _ decl in
+			 the structured binding, just push and move it
+			 away once.  */
+		      if (seen_name_independent_decl)
+			continue;
+		      seen_name_independent_decl = true;
+		    }
 		  tree name = DECL_NAME (d);
 		  names.safe_push (name);
 		  bindings.safe_push (IDENTIFIER_BINDING (name));
@@ -20625,9 +20640,13 @@ cp_parser_simple_type_specifier (cp_parser* parser,
 	}
 
       /* If it didn't work out, we don't have a TYPE.  */
-      if ((flags & CP_PARSER_FLAGS_OPTIONAL)
-	  && !cp_parser_parse_definitely (parser))
-	type = NULL_TREE;
+      if (flags & CP_PARSER_FLAGS_OPTIONAL)
+	{
+	  if (!type)
+	    cp_parser_simulate_error (parser);
+	  if (!cp_parser_parse_definitely (parser))
+	    type = NULL_TREE;
+	}
 
       /* Keep track of all name-lookups performed in class scopes.  */
       if (type
@@ -20772,8 +20791,8 @@ cp_parser_placeholder_type_specifier (cp_parser *parser, location_t loc,
       /* In a default argument we may not be creating new parameters.  */
       if (parser->local_variables_forbidden_p & LOCAL_VARS_FORBIDDEN)
 	{
-	  /* If this assert turns out to be false, do error() instead.  */
-	  gcc_assert (tentative);
+	  if (!tentative)
+	    error_at (loc, "invalid use of concept-name %qD", con);
 	  return error_mark_node;
 	}
       return build_constrained_parameter (con, proto, args);
@@ -23903,7 +23922,8 @@ cp_parser_direct_declarator (cp_parser* parser,
 
 	      /* Parse the parameter-declaration-clause.  */
 	      params
-		= cp_parser_parameter_declaration_clause (parser, flags);
+		= cp_parser_parameter_declaration_clause (parser, flags,
+							  /*lambda_p=*/false);
 	      const location_t parens_end
 		= cp_lexer_peek_token (parser->lexer)->location;
 
@@ -25252,13 +25272,17 @@ function_being_declared_is_template_p (cp_parser* parser)
 
    The parser flags FLAGS is used to control type-specifier parsing.
 
+   LAMBDA_P is true if this is the parameter-declaration-clause of
+   a lambda-declarator.
+
    Returns a representation for the parameter declarations.  A return
    value of NULL indicates a parameter-declaration-clause consisting
    only of an ellipsis.  */
 
 static tree
 cp_parser_parameter_declaration_clause (cp_parser* parser,
-					cp_parser_flags flags)
+					cp_parser_flags flags,
+					bool lambda_p)
 {
   tree parameters;
   cp_token *token;
@@ -25267,15 +25291,15 @@ cp_parser_parameter_declaration_clause (cp_parser* parser,
   auto cleanup = make_temp_override
     (parser->auto_is_implicit_function_template_parm_p);
 
-  if (!processing_specialization
-      && !processing_template_parmlist
-      && !processing_explicit_instantiation
-      /* default_arg_ok_p tracks whether this is a parameter-clause for an
-         actual function or a random abstract declarator.  */
-      && parser->default_arg_ok_p)
-    if (!current_function_decl
-	|| (current_class_type && LAMBDA_TYPE_P (current_class_type)))
-      parser->auto_is_implicit_function_template_parm_p = true;
+  if (lambda_p
+      || (!processing_specialization
+	  && !processing_template_parmlist
+	  && !processing_explicit_instantiation
+	  /* default_arg_ok_p tracks whether this is a parameter-clause for an
+	     actual function or a random abstract declarator.  */
+	  && parser->default_arg_ok_p
+	  && !current_function_decl))
+    parser->auto_is_implicit_function_template_parm_p = true;
 
   /* Peek at the next token.  */
   token = cp_lexer_peek_token (parser->lexer);
@@ -31472,7 +31496,8 @@ cp_parser_requirement_parameter_list (cp_parser *parser)
     return error_mark_node;
 
   tree parms = (cp_parser_parameter_declaration_clause
-		(parser, CP_PARSER_FLAGS_TYPENAME_OPTIONAL));
+		(parser, CP_PARSER_FLAGS_TYPENAME_OPTIONAL,
+		 /*lambda_p=*/false));
 
   if (!parens.require_close (parser))
     return error_mark_node;
@@ -35659,7 +35684,6 @@ cp_parser_cache_defarg (cp_parser *parser, bool nsdmi)
 
 	  /* If we run out of tokens, issue an error message.  */
 	case CPP_EOF:
-	case CPP_PRAGMA_EOL:
 	  error_at (token->location, "file ends in default argument");
 	  return error_mark_node;
 

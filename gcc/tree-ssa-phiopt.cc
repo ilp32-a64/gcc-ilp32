@@ -2558,7 +2558,7 @@ spaceship_replacement (basic_block cond_bb, basic_block middle_bb,
 	}
       else if (tree_to_shwi (arg1) != 2
 	       || absu_hwi (tree_to_shwi (arg0)) != 1
-	       || wi::to_widest (arg0) == wi::to_widest (arg1))
+	       || wi::to_widest (arg0) == wi::to_widest (arg2))
 	return false;
       switch (cmp2)
 	{
@@ -3433,7 +3433,9 @@ cond_if_else_store_replacement_1 (basic_block then_bb, basic_block else_bb,
       || else_assign == NULL
       || !gimple_assign_single_p (else_assign)
       || gimple_clobber_p (else_assign)
-      || gimple_has_volatile_ops (else_assign))
+      || gimple_has_volatile_ops (else_assign)
+      || stmt_references_abnormal_ssa_name (then_assign)
+      || stmt_references_abnormal_ssa_name (else_assign))
     return false;
 
   lhs = gimple_assign_lhs (then_assign);

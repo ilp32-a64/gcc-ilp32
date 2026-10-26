@@ -2981,9 +2981,10 @@ struct GTY(()) lang_decl_fn {
      this pointer and result pointer adjusting thunks are
      chained here.  This pointer thunks to return pointer thunks
      will be chained on the return pointer thunk.
-     For a DECL_CONSTUCTOR_P FUNCTION_DECL, this is the base from
-     whence we inherit.  Otherwise, it is the class in which a
-     (namespace-scope) friend is defined (if any).   */
+     For a DECL_CONSTRUCTOR_P or deduction_guide_p FUNCTION_DECL,
+     this is the base from whence we inherit.
+     Otherwise, it is the class in which a (namespace-scope) friend
+     is defined (if any).  */
   tree context;
 
   union lang_decl_u5
@@ -3574,7 +3575,8 @@ struct GTY(()) lang_decl {
    the DECL_FRIEND_CONTEXT for `f' will be `S'.  */
 #define DECL_FRIEND_CONTEXT(NODE)				\
   ((DECL_DECLARES_FUNCTION_P (NODE) && !DECL_VIRTUAL_P (NODE)	\
-    && !DECL_CONSTRUCTOR_P (NODE))				\
+    && !DECL_CONSTRUCTOR_P (NODE)				\
+    && (cxx_dialect < cxx23 || !deduction_guide_p (NODE)))	\
    ? LANG_DECL_FN_CHECK (NODE)->context				\
    : NULL_TREE)
 
@@ -5580,7 +5582,8 @@ enum cp_lvalue_kind_flags {
   clk_class = 4,    /* A prvalue of class or array type.  */
   clk_bitfield = 8, /* An lvalue for a bit-field.  */
   clk_packed = 16,  /* An lvalue for a packed field.  */
-  clk_implicit_rval = 1<<5 /* An lvalue being treated as an xvalue.  */
+  clk_implicit_rval = 1<<5, /* An lvalue being treated as an xvalue.  */
+  clk_mergeable = 1<<6
 };
 
 /* This type is used for parameters and variables which hold
@@ -7651,6 +7654,7 @@ extern bool deduction_guide_p			(const_tree);
 extern bool copy_guide_p			(const_tree);
 extern bool template_guide_p			(const_tree);
 extern bool builtin_guide_p			(const_tree);
+extern bool inherited_guide_p			(const_tree);
 extern void store_explicit_specifier		(tree, tree);
 extern tree lookup_explicit_specifier		(tree);
 extern tree lookup_imported_hidden_friend	(tree);
@@ -8032,6 +8036,7 @@ extern bool glvalue_p				(const_tree);
 extern bool obvalue_p				(const_tree);
 extern bool xvalue_p	                        (const_tree);
 extern bool bitfield_p				(const_tree);
+extern bool non_mergeable_glvalue_p		(const_tree);
 extern tree cp_stabilize_reference		(tree);
 extern bool builtin_valid_in_constant_expr_p    (const_tree);
 extern tree build_min				(enum tree_code, tree, ...);
@@ -8606,7 +8611,7 @@ extern tree find_template_parameters		(tree, tree);
 extern bool equivalent_constraints              (tree, tree);
 extern bool equivalently_constrained            (tree, tree);
 extern bool strictly_subsumes			(tree, tree);
-extern bool weakly_subsumes			(tree, tree);
+extern bool ttp_subsumes			(tree, tree);
 extern int more_constrained                     (tree, tree);
 extern bool at_least_as_constrained             (tree, tree);
 extern bool constraints_equivalent_p            (tree, tree);

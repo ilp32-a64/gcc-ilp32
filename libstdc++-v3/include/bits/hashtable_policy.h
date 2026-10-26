@@ -966,6 +966,7 @@ namespace __detail
 	return __h._M_insert(__hint, __v, __node_gen, __unique_keys{});
       }
 
+#ifdef __glibcxx_unordered_map_try_emplace // C++ >= 17 && HOSTED
       template<typename _KType, typename... _Args>
 	std::pair<iterator, bool>
 	try_emplace(const_iterator, _KType&& __k, _Args&&... __args)
@@ -987,6 +988,7 @@ namespace __detail
 	  __node._M_node = nullptr;
 	  return { __it, true };
 	}
+#endif
 
       void
       insert(initializer_list<value_type> __l)
@@ -1394,7 +1396,10 @@ namespace __detail
 
       void
       _M_swap(_Hash_code_base& __x)
-      { std::swap(__ebo_hash::_M_get(), __x.__ebo_hash::_M_get()); }
+      {
+	using std::swap;
+	swap(__ebo_hash::_M_get(), __x.__ebo_hash::_M_get());
+      }
 
       const _Hash&
       _M_hash() const { return __ebo_hash::_M_cget(); }
@@ -1778,7 +1783,8 @@ namespace __detail
       _M_swap(_Hashtable_base& __x)
       {
 	__hash_code_base::_M_swap(__x);
-	std::swap(_EqualEBO::_M_get(), __x._EqualEBO::_M_get());
+	using std::swap;
+	swap(_EqualEBO::_M_get(), __x._EqualEBO::_M_get());
       }
 
       const _Equal&

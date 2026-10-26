@@ -6229,7 +6229,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -6275,7 +6275,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -6299,7 +6299,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -6344,7 +6344,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -6368,7 +6368,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -13319,7 +13319,7 @@ else
 	# Clearing GMPINC is necessary to prevent host headers being
 	# used by the build compiler.  Defining GENERATOR_FILE stops
 	# system.h from including gmp.h.
-	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
+	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD} -DGENERATOR_FILE" \
 	CXX="${CXX_FOR_BUILD}" CXXFLAGS="${CXXFLAGS_FOR_BUILD}" \
 	LD="${LD_FOR_BUILD}" LDFLAGS="${LDFLAGS_FOR_BUILD}" \
 	GMPINC="" CPPFLAGS="${CPPFLAGS_FOR_BUILD} -DGENERATOR_FILE" \
@@ -15269,14 +15269,14 @@ SYSTEM_HEADER_DIR='$(NATIVE_SYSTEM_HEADER_DIR)'
 BUILD_SYSTEM_HEADER_DIR=$SYSTEM_HEADER_DIR
 
 if test x$host != x$target || test "x$TARGET_SYSTEM_ROOT" != x ||
-   test x$build != x$host || test "x$with_build_sysroot" != x; then
+   test x$build != x$host || test "x$with_build_sysroot" != x || test x$FORCE_CROSS_LAYOUT = xyes; then
   if test "x$with_build_sysroot" != x; then
     BUILD_SYSTEM_HEADER_DIR=$with_build_sysroot'$${sysroot_headers_suffix}$(NATIVE_SYSTEM_HEADER_DIR)'
   else
     BUILD_SYSTEM_HEADER_DIR='$(CROSS_SYSTEM_HEADER_DIR)'
   fi
 
-  if test x$host != x$target
+  if test x$host != x$target || test x$FORCE_CROSS_LAYOUT = xyes
   then
     CROSS="-DCROSS_DIRECTORY_STRUCTURE"
     ALL=all.cross
@@ -27071,12 +27071,12 @@ $as_echo "$gcc_cv_as_shf_merge" >&6; }
 
 
 if test $gcc_cv_as_shf_merge = no; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for section merging support" >&5
-$as_echo_n "checking assembler for section merging support... " >&6; }
-if ${gcc_cv_as_shf_merge+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for section merging support (%progbits)" >&5
+$as_echo_n "checking assembler for section merging support (%progbits)... " >&6; }
+if ${gcc_cv_as_shf_merge_percent+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  gcc_cv_as_shf_merge=no
+  gcc_cv_as_shf_merge_percent=no
   if test x$gcc_cv_as != x; then
     $as_echo '.section .rodata.str, "aMS", %progbits, 1' > conftest.s
     if { ac_try='$gcc_cv_as $gcc_cv_as_flags --fatal-warnings -o conftest.o conftest.s >&5'
@@ -27086,7 +27086,7 @@ else
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; }
     then
-	gcc_cv_as_shf_merge=yes
+	gcc_cv_as_shf_merge_percent=yes
     else
       echo "configure: failed program was" >&5
       cat conftest.s >&5
@@ -27094,14 +27094,15 @@ else
     rm -f conftest.o conftest.s
   fi
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_cv_as_shf_merge" >&5
-$as_echo "$gcc_cv_as_shf_merge" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_cv_as_shf_merge_percent" >&5
+$as_echo "$gcc_cv_as_shf_merge_percent" >&6; }
 
 
 fi
 
 cat >>confdefs.h <<_ACEOF
-#define HAVE_GAS_SHF_MERGE `if test $gcc_cv_as_shf_merge = yes; then echo 1; else echo 0; fi`
+#define HAVE_GAS_SHF_MERGE `if test $gcc_cv_as_shf_merge = yes \
+    || test $gcc_cv_as_shf_merge_percent = yes; then echo 1; else echo 0; fi`
 _ACEOF
 
 
@@ -34103,14 +34104,14 @@ fi
 
 # Echo link setup.
 if test x${build} = x${host} ; then
-  if test x${host} = x${target} ; then
+  if test x${host} = x${target} && test x$FORCE_CROSS_LAYOUT != xyes ; then
     echo "Links are now set up to build a native compiler for ${target}." 1>&2
   else
     echo "Links are now set up to build a cross-compiler" 1>&2
     echo " from ${host} to ${target}." 1>&2
   fi
 else
-  if test x${host} = x${target} ; then
+  if test x${host} = x${target} && test x$FORCE_CROSS_LAYOUT != xyes ; then
     echo "Links are now set up to build (on ${build}) a native compiler" 1>&2
     echo " for ${target}." 1>&2
   else

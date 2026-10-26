@@ -15966,6 +15966,14 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $libgo_cv_lib_setcontext_clobbers_tls" >&5
 $as_echo "$libgo_cv_lib_setcontext_clobbers_tls" >&6; }
 if test "$libgo_cv_lib_setcontext_clobbers_tls" = "yes"; then
+  case "$target" in
+  mips*-linux-*)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: FIXME: overwrite setcontext_clobbers_tls for $target:$ptr_type_size" >&5
+$as_echo "$as_me: WARNING: FIXME: overwrite setcontext_clobbers_tls for $target:$ptr_type_size" >&2;}
+    libgo_cv_lib_setcontext_clobbers_tls=no ;;
+  esac
+fi
+if test "$libgo_cv_lib_setcontext_clobbers_tls" = "yes"; then
 
 $as_echo "#define SETCONTEXT_CLOBBERS_TLS 1" >>confdefs.h
 

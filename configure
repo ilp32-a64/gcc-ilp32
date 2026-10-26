@@ -2840,6 +2840,11 @@ host_libs="gettext libiberty opcodes bfd readline tcl tk itcl libgui zlib libbac
 # If --enable-gold is used, "gold" may replace "ld".
 host_tools="texinfo flex bison binutils gas ld fixincludes gcc cgen sid sim gdb gdbserver gprof etc expect dejagnu m4 utils guile fastjar gnattools libcc1 gm2tools gotools c++tools"
 
+case "${target}" in
+  hppa64-*linux*) ;;
+  *) target_libiberty="target-libiberty";;
+esac
+
 # these libraries are built for the target environment, and are built after
 # the host libraries and the host tools (which may be a cross compiler)
 # Note that libiberty is not a target library.
@@ -2859,6 +2864,7 @@ target_libraries="target-libgcc \
 		target-libffi \
 		target-libobjc \
 		target-libada \
+		${target_libiberty} \
 		target-libgm2 \
 		target-libgo \
 		target-libgrust \
@@ -10418,7 +10424,7 @@ target_configargs="$target_configargs ${tbaseargs}"
 # native.  However, it would be better to use other mechanisms to make the
 # sorts of decisions they want to make on this basis.  Please consider
 # this option to be deprecated.  FIXME.
-if test x${is_cross_compiler} = xyes ; then
+if test x${is_cross_compiler} = xyes || test x${FORCE_CROSS_LAYOUT} = xyes; then
   target_configargs="--with-cross-host=${host_noncanonical} ${target_configargs}"
 fi
 
@@ -10559,7 +10565,7 @@ fi
 # being built; programs in there won't even run.
 if test "${build}" = "${host}" && test -d ${srcdir}/gcc; then
   # Search for pre-installed headers if nothing else fits.
-  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include'
+  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include -isystem $(CURDIR)/sys-include'
 fi
 
 if test "x${use_gnu_ld}" = x &&
@@ -18987,6 +18993,7 @@ compare_exclusions="$compare_exclusions | gcc/m2/gm2-compiler-boot/SYSTEM*"
 compare_exclusions="$compare_exclusions | gcc/m2/gm2version*"
 case "$target" in
   hppa*64*-*-hpux*) ;;
+  mipsel-*linux-gnu) compare_exclusions="$compare_exclusions | gcc/rust/rust-macro-builtins.o | gcc/rust/rust-session-manager.o | gcc/rust/rust-cfg-parser.o | gcc/rust/rust-lex.o" ;;
   powerpc*-ibm-aix*) compare_exclusions="$compare_exclusions | *libgomp*\$(objext)" ;;
 esac
 

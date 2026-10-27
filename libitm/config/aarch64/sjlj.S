@@ -146,7 +146,10 @@ GTM_longjmp:
 # define PAC_FLAG 0
 #endif
 
-/* Add a NT_GNU_PROPERTY_TYPE_0 note.  */
+/* Add a NT_GNU_PROPERTY_TYPE_0 note.  The notes of ELF64 objects are
+   8-byte aligned with the descriptor padded to 8 bytes, those of ELF32
+   (ILP32) objects 4-byte aligned without padding.  */
+#ifdef __LP64__
 #define GNU_PROPERTY(type, value)	\
   .section .note.gnu.property, "a";	\
   .p2align 3;				\
@@ -158,6 +161,18 @@ GTM_longjmp:
   .word 4;				\
   .word value;				\
   .word 0;
+#else
+#define GNU_PROPERTY(type, value)	\
+  .section .note.gnu.property, "a";	\
+  .p2align 2;				\
+  .word 4;				\
+  .word 12;				\
+  .word 5;				\
+  .asciz "GNU";				\
+  .word type;				\
+  .word 4;				\
+  .word value;
+#endif
 
 #if defined(__linux__) || defined(__FreeBSD__)
 .section .note.GNU-stack, "", %progbits

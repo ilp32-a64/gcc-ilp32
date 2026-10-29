@@ -33,6 +33,12 @@
 #include <sys/syscall.h>
 #include <errno.h>
 
+/* Targets with only a 64-bit time_t (glibc for AArch64 ILP32) have
+   SYS_futex_time64 but no SYS_futex.  */
+#if !defined (SYS_futex) && defined (SYS_futex_time64)
+#define SYS_futex SYS_futex_time64
+#endif
+
 static inline long
 sys_futex0 (std::atomic<int> *addr, int op, int val)
 {

@@ -18,11 +18,16 @@ case "$target" in
 	# compiled/linked against NPTL and not cross-compiling, check
 	# if programs are run by default against NPTL and if not, issue
 	# a warning.
+	# Targets with only a 64-bit time_t, such as glibc for AArch64
+	# ILP32, have SYS_futex_time64 but no SYS_futex: use that.
 	enable_linux_futex=no
 	AC_LINK_IFELSE(
 	 [AC_LANG_PROGRAM(
 	  [#include <sys/syscall.h>
 	   #include <unistd.h>
+	   #if !defined (SYS_futex) && defined (SYS_futex_time64)
+	   #define SYS_futex SYS_futex_time64
+	   #endif
 	   int lk;],
 	  [syscall (SYS_gettid); syscall (SYS_futex, &lk, 0, 0, 0);])],
 	  [save_LIBS="$LIBS"
@@ -50,6 +55,9 @@ If so, please configure with --disable-linux-futex])
 	 [AC_LANG_PROGRAM(
 	  [#include <sys/syscall.h>
 	   #include <unistd.h>
+	   #if !defined (SYS_futex) && defined (SYS_futex_time64)
+	   #define SYS_futex SYS_futex_time64
+	   #endif
 	   int lk;],
 	  [syscall (SYS_gettid); syscall (SYS_futex, &lk, 0, 0, 0);])],[],
 	  [AC_MSG_ERROR([SYS_gettid and SYS_futex required for --enable-linux-futex])])

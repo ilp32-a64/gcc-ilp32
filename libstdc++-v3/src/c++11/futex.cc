@@ -39,6 +39,14 @@
 #include <sys/syscall.h>
 #endif
 
+// Targets with only a 64-bit time_t (glibc for AArch64 ILP32) have
+// SYS_futex_time64 but no SYS_futex.  Their timespec has a 64-bit tv_sec,
+// as futex_time64 expects, and defining SYS_futex to it here selects
+// ::timespec below.
+#if !defined(SYS_futex) && defined(SYS_futex_time64)
+# define SYS_futex SYS_futex_time64
+#endif
+
 // Constants for the wait/wake futex syscall operations
 const unsigned futex_wait_op = 0;
 const unsigned futex_wait_bitset_op = 9;

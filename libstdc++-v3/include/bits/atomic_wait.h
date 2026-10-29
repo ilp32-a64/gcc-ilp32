@@ -46,6 +46,11 @@
 # include <unistd.h>
 # include <syscall.h>
 # include <bits/functexcept.h>
+// Targets with only a 64-bit time_t (glibc for AArch64 ILP32) have
+// SYS_futex_time64 but no SYS_futex.
+# if !defined(SYS_futex) && defined(SYS_futex_time64)
+#  define SYS_futex SYS_futex_time64
+# endif
 #endif
 
 # include <bits/std_mutex.h>  // std::mutex, std::__condvar

@@ -50696,6 +50696,8 @@ case "$target" in
 	# compiled/linked against NPTL and not cross-compiling, check
 	# if programs are run by default against NPTL and if not, issue
 	# a warning.
+	# Targets with only a 64-bit time_t, such as glibc for AArch64
+	# ILP32, have SYS_futex_time64 but no SYS_futex: use that.
 	enable_linux_futex=no
 	if test x$gcc_no_link = xyes; then
   as_fn_error $? "Link tests are not allowed after GCC_NO_EXECUTABLES." "$LINENO" 5
@@ -50704,6 +50706,9 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <sys/syscall.h>
 	   #include <unistd.h>
+	   #if !defined (SYS_futex) && defined (SYS_futex_time64)
+	   #define SYS_futex SYS_futex_time64
+	   #endif
 	   int lk;
 int
 main ()
@@ -50763,6 +50768,9 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <sys/syscall.h>
 	   #include <unistd.h>
+	   #if !defined (SYS_futex) && defined (SYS_futex_time64)
+	   #define SYS_futex SYS_futex_time64
+	   #endif
 	   int lk;
 int
 main ()

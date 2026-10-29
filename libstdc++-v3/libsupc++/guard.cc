@@ -65,6 +65,11 @@ __cxa_guard_abort (__guard* g) _GLIBCXX_NOTHROW
 # include <climits>
 # include <syscall.h>
 # include <unistd.h>
+// Targets with only a 64-bit time_t (glibc for AArch64 ILP32) have
+// SYS_futex_time64 but no SYS_futex.
+# if !defined(SYS_futex) && defined(SYS_futex_time64)
+#  define SYS_futex SYS_futex_time64
+# endif
 # define _GLIBCXX_USE_FUTEX
 # define _GLIBCXX_FUTEX_WAIT 0
 # define _GLIBCXX_FUTEX_WAKE 1
